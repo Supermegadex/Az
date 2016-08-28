@@ -230,8 +230,8 @@ Polymer({
   },
 
   runner: function(ms){
-    if(this.arr[0] != null && this.arr[0] != undefined && this.arr[0] != "undefined"){
-      if(ms != null && ms != undefined && ms != "undefined"){
+    if(this.arr[0] !== null && this.arr[0] !== undefined && this.arr[0] != "undefined"){
+      if(ms !== null && ms !== undefined && ms != "undefined"){
         this.print(ms);
       }
       else if(!this.skip){
@@ -256,7 +256,7 @@ Polymer({
             dialogue.start();
             $(dialogue).off("click");
             dialogue.keys.unregister_combo(dialogue.options.next);
-          })
+          });
         }
       }
       else{
@@ -286,14 +286,18 @@ Polymer({
 
   commands: {
     "w": function(ms){
-      dialogue.runner(ms);
+      if(dialogue.skip){
+        dialogue.runner(0);
+      }
+      else{
+        dialogue.runner(ms);
+      }
       return(false);
     },
     "c": function(color){
       switch (color){
         case "y":
           return("<span class='y'>");
-          break;
         default:
           return(false);
       }
@@ -315,7 +319,7 @@ Polymer({
       var i = 0;
       var r = "";
       while (i < num){
-        r += "&nbsp;"
+        r += "&nbsp;";
         i++;
       }
       return(r);
@@ -347,20 +351,17 @@ Polymer({
       var imp = r.replace("\\", "");
       imp = imp.replace(";", "");
       var run = imp.split(":");
-      if(run[1] == undefined || run[1] == "undefined" || run[1] == null){
+      if(run[1] === undefined || run[1] === "undefined" || run[1] === null){
         console.log(imp, imp[0]);
         if(imp[0] == "<"){
           r = imp;
-          console.log("Returning an HTML element: " + r);
         }
         else{
           r = Function("return(" + imp + ")")();
-          console.log("Returning a JavaScript function: " + r);
         }
       }
       else{
-        var r = this.commands[run[0]](run[1]);
-        console.log("Returning a custom command: " + r);
+        r = this.commands[run[0]](run[1]);
       }
     }
     return(r);
